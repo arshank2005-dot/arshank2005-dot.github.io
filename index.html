@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileHangar | Free Digital Assets</title>
+    
+    
+
+    <style>
+        /* --- CSS STYLING --- */
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        header {
+            background: #1a252f;
+            color: white;
+            padding: 0.8rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .logo span { color: #e67e22; }
+        nav ul { list-style: none; display: flex; padding: 0; margin: 0; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { color: #ecf0f1; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        nav ul li a:hover { color: #e67e22; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+        }
+        .hero h1 { margin: 0 0 15px 0; font-size: 2.5rem; }
+        .hero p { margin: 0; font-size: 1.1rem; opacity: 0.8; }
+
+        /* Instructions */
+        .container {
+            border: 1px solid #334155;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            background-color: white;
+            max-width: 90%;
+            text-align: center;
+        }
+        .container ul { text-align: left; display: inline-block; margin-top: 10px; }
+        
+        .warning-text {
+            background-color: #ffebee; 
+            border: 1px solid #ef9a9a; 
+            color: #c62828; 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .construction {
+            background-color: #ffff8a; 
+            border: 1px solid #eeff00; 
+            color: black; 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Cards */
+        section { padding: 60px 5%; border-bottom: 1px solid #e0e0e0; }
+        .section-header { margin-bottom: 30px; display: flex; align-items: center; }
+        .section-header h2 { font-size: 2rem; margin-right: 15px; color: #2c3e50; }
+        .line { flex-grow: 1; height: 2px; background: #ddd; }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .preview { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: 15px; background: #eee; }
+        
+        /* Category Colors */
+        .bg-cad { background: linear-gradient(to right, #2980b9, #3498db); }
+        .bg-audio { background: linear-gradient(to right, #8e44ad, #9b59b6); }
+        .bg-img { background: linear-gradient(to right, #d35400, #e67e22); }
+        .bg-vid { background: linear-gradient(to right, #c0392b, #e74c3c); }
+
+        .card h3 { margin: 10px 0 5px; font-size: 1.1rem; color: #333; }
+        .card .meta { color: #777; font-size: 0.8rem; margin-bottom: 15px; display: block; }
+        
+        /* --- BUTTON STYLING --- */
+        .dl-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            
+            /* High Z-Index to beat Ads */
+            position: relative; 
+            z-index: 2147483647; 
+        }
+        .dl-btn:hover { background: #e67e22; }
+
+        /* --- THE SUBMERGE FIX --- */
+        /* When 'modal-open' is added to body, lower the buttons */
+        body.modal-open .dl-btn {
+            z-index: 0 !important; 
+        }
+
+        /* MODAL STYLING */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            
+            /* Max Z-Index to be on top */
+            z-index: 2147483647; 
+            
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        /* The Inner Box */
+        .ad-box {
+            background: #f8f9fa;
+            color: #333;
+            min-height: 200px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            border: 2px solid #e67e22;
+            border-radius: 8px;
+        }
+
+        #finalDownloadBtn {
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            
+            /* Ensure this is clickable */
+            position: relative;
+            z-index: 2147483647;
+        }
+        #finalDownloadBtn:hover { background-color: #218838; }
+
+        footer {
+            background: #1a252f;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">FILE<span>HANGAR</span></div>
+            <ul>
+                <li><a href="#cad">CAD Models</a></li>
+                <li><a href="#audio">Audio</a></li>
+                <li><a href="#images">Images</a></li>
+                <li><a href="#video">Video</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Your Digital Payload Awaits</h1>
+        <p>Premium digital assets. Free to download. Supported by ads.</p>
+    </div>
+
+    <div class="container">
+        <h2>Instructions</h2>
+        <ul>
+            <li>Find the file that you want and click on the <strong>Download</strong> button.</li>
+            <li>A <strong>new tab</strong> will open which will display an ad.</li>
+            <li>Come to this <strong>FILEHANGAR</strong> tab.</li>
+            <li>Wait for the timer to end and a green <strong>DOWNLOAD FILE NOW</strong> button will appear.</li>
+            <li>Click on it and the respective file will be downloaded on your device.</li>
+        </ul>
+        <div class="warning-text">
+            <strong>⚠️ Note:</strong> If you are using an adblocker, please disable it or else the download button won't work.
+        </div>
+        <div class="construction">
+            <strong>⚠️ Note:</strong> Some items on this website are not available. Thay have been marked <strong>Not Available</strong>.
+        </div>
+    </div>
+
+    <section id="cad">
+        <div class="section-header">
+            <h2>CAD Models</h2>
+            <div class="line"></div>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <img src="Pinion Pic.png" class="preview" alt="3 Jaw Chuck Pinion">
+                <h3>3 Jaw Chuck Pinion</h3>
+                <span class="meta">Format: .IPT | Size: 687KB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('3 Jaw Chuck Pinion.zip')">Download</button>
+            </div>
+            <div class="card">
+                <img src="Teapoy Pic.png" class="preview" alt="Teapoy">
+                <h3>Teapoy</h3>
+                <span class="meta">Format: .IPT | Size: 343KB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Teapoy.zip')">Download</button>
+            </div>
+             <div class="card">
+                <img src="Bottle.png" class="preview" alt="Bottle">
+                <h3>Bottle</h3>
+                <span class="meta">Format: .IPT | Size: 239KB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Bottle.zip')">Download</button>
+            </div>
+            <div class="card">
+                <img src="Sedan.png" class="preview" alt="Simple Sedan Car">
+                <h3>Simple Sedan Car</h3>
+                <span class="meta">Format: .IPT | Size: 464KB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Simple Sedan Car')">Download</button>
+            </div>
+            <div class="card">
+                <img src="Hellfire.png" class="preview" alt="Hellfire Missile">
+                <h3>Hellfire Missile</h3>
+                <span class="meta">Format: .IPT | Size: 558KB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Hellfire Missile')">Download</button>
+            </div>
+            <div class="card">
+                <img src="Pipe Vice.png" class="preview" alt="Pipe Vice">
+                <h3>Pipe Vice</h3>
+                <span class="meta">Format: .ZIP | Size: 1.97MB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Pipe Vice')">Download</button>
+            </div>
+            <div class="card">
+                <img src="Flange Coupling.png" class="preview" alt="Protected Flange Coupling">
+                <h3>Protected Flange Coupling</h3>
+                <span class="meta">Format: .ZIP | Size: 3.82MB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Protected Flange Coupling')">Download</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="audio">
+        <div class="section-header">
+            <h2>Audio & SFX</h2>
+            <div class="line"></div>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <div class="preview bg-audio"></div>
+                <h3>Not Available</h3>
+                <span class="meta">Format: .WAV Pack | Size: 250MB</span>
+                <button class="dl-btn" onmousedown="startAdProcess('SciFi_SFX_Pack.zip')">Download</button>
+            </div>
+            <div class="card">
+                <div class="preview bg-audio"></div>
+                <h3>Not Available</h3>
+                <span class="meta">Format: .MP3 (320kbps)</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Ambient_Track_01.mp3')">Download</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="images">
+        <div class="section-header">
+            <h2>Images & Wallpapers</h2>
+            <div class="line"></div>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <div class="preview bg-img"></div>
+                <h3>Not Available</h3>
+                <span class="meta">Resolution: 3840x2160 | .PNG</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Cyberpunk_City.png')">Download</button>
+            </div>
+            <div class="card">
+                <div class="preview bg-img"></div>
+                <h3>Not Available</h3>
+                <span class="meta">5 Pack | Seamless | .JPG</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Metal_Textures.zip')">Download</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="section-header">
+            <h2>Video Assets</h2>
+            <div class="line"></div>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <div class="preview bg-vid"></div>
+                <h3>Not Available</h3>
+                <span class="meta">Format: .MOV (Alpha Channel)</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Smoke_Fire_VFX.zip')">Download</button>
+            </div>
+            <div class="card">
+                <div class="preview bg-vid"></div>
+                <h3>Not Available</h3>
+                <span class="meta">10s Loop | 1080p | .MP4</span>
+                <button class="dl-btn" onmousedown="startAdProcess('Neon_Loop.mp4')">Download</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 FileHangar. All Rights Reserved.</p>
+    </footer>
+
+    <div id="adModal" class="modal">
+        <div class="modal-content">
+            <h2>Processing Request...</h2>
+            
+            <div class="ad-box">
+                <h3>Checking File Status...</h3>
+                <p>Please wait while we prepare your secure link.</p>
+                
+                <p id="timerText" style="margin-top: 20px; font-weight: bold; font-size: 1.4rem;">
+                    Download ready in: <span id="timer" style="color: #d35400;">10</span>s
+                </p>
+
+                <button id="finalDownloadBtn" onclick="finalizeDownload()" style="display: none;">
+                    Download File Now
+                </button>
+            </div>
+
+            <p style="font-size: 0.8rem; color: #777;">Thank you for supporting free engineering resources.</p>
+            <button onclick="closeModal()" style="margin-top:10px; background:none; border:none; color:#999; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval;
+        let activeFile = "";
+
+        // *** PASTE YOUR DIRECT LINK HERE ***
+        const adLink = ""; 
+
+        // 1. LINK DATABASE
+        const database = {
+            "3 Jaw Chuck Pinion.zip":         "https://drive.google.com/uc?export=download&id=18dwvQ9lk5MTRNxJ2pJx9RS6_KmFLXOQz",
+            "Teapoy.zip":                     "https://drive.google.com/uc?export=download&id=1jdkQoU6YuwHGuQRuv4vNFlwL1Z2GLn5x",
+            "Bottle.zip":                     "https://drive.google.com/uc?export=download&id=1kcvAcmz2wFik8C02wkCcCEmvIclTCgX7",
+            "Simple Sedan Car":               "https://drive.google.com/uc?export=download&id=1KisJ5VrAwWF8r7eKZcB8QYU-CSm3kGoO",
+            "Hellfire Missile":               "https://drive.google.com/uc?export=download&id=1l-NicYstECwlGiFoh9kdNDI7piB2rgys",
+            "Pipe Vice":                      "https://drive.google.com/uc?export=download&id=1ht_TakxaU5yBC1dRwPabCxH66NCqQ_sm",
+            "Protected Flange Coupling":      "https://drive.google.com/uc?export=download&id=1kkZXN3GqT0jJAFRET-ECjLdwuY48jiYb",
+            "Smoke_Fire_VFX.zip":             "https://drive.google.com/example-link-8",
+            "Neon_Loop.mp4":                  "https://drive.google.com/example-link-9"
+        };
+
+        // 2. Start the Timer & Open Ad
+        function startAdProcess(fileName) {
+            activeFile = fileName;
+            
+            // A. Open the Ad (Direct Link) in a new tab immediately
+            if (adLink && adLink.startsWith("http")) {
+                window.open(adLink, '_blank');
+            }
+
+            // B. Prepare the UI
+            const modal = document.getElementById('adModal');
+            const timerSpan = document.getElementById('timer');
+            const timerText = document.getElementById('timerText');
+            const dlBtn = document.getElementById('finalDownloadBtn');
+            
+            document.body.classList.add('modal-open'); // Submerge blue buttons
+            modal.style.display = 'flex';
+            
+            // Set End Time (Now + 10 seconds)
+            const endTime = Date.now() + 10000; 
+
+            // Reset UI
+            timerText.style.display = 'block';
+            dlBtn.style.display = 'none';
+            timerSpan.innerText = "10";
+
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            // C. Start Countdown
+            countdownInterval = setInterval(() => {
+                const now = Date.now();
+                const distance = endTime - now;
+                const secondsLeft = Math.ceil(distance / 1000);
+                
+                if (secondsLeft >= 0) {
+                    timerSpan.innerText = secondsLeft;
+                }
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    timerText.style.display = 'none';
+                    dlBtn.style.display = 'inline-block';
+                }
+            }, 250);
+        }
+
+        // 3. Close Modal
+        function closeModal() {
+            document.getElementById('adModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+
+        // 4. Finalize Download
+        function finalizeDownload() {
+            closeModal();
+            const downloadLink = database[activeFile];
+            if(downloadLink) {
+                window.location.href = downloadLink;
+            } else {
+                alert("Error: Link not found.");
+            }
+        }
+    </script>
+</body>
+</html>
